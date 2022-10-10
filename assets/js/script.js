@@ -51,6 +51,29 @@ var getWeather = function(lat, lon) {
     })
 }
 
+var storeData = (city) => {
+    //get previous searches
+    var getStoredData = localStorage.getItem('Searched Cities');
+    var citiesArr;
+    console.log(getStoredData);
+
+    //if there are no previous searches, then create empty array
+    if (getStoredData === null) {
+        citiesArr = []
+    //if there are previous searches, then retrieve them
+    } else {
+        citiesArr = JSON.parse(getStoredData)
+    }
+
+    citiesArr.push(city);
+    console.log(city);
+
+    //stringify array to store in local storage
+    var citiesArrString = JSON.stringify(citiesArr);
+    //store array into storage
+    window.localStorage.setItem('Searched Cities', citiesArrString);
+}
+
 //Capture user input
 searchBtn.addEventListener("click", function () {
     event.preventDefault();
@@ -63,5 +86,6 @@ searchBtn.addEventListener("click", function () {
     }
     console.log(city);
     getLocation(city);
+    storeData(city);
 
 })
