@@ -21,7 +21,7 @@ var getLocation = function(city) {
                 var lat = data[0].lat;
                 var lon = data[0].lon;
                 
-                getWeather(lat, lon)
+                getWeather(lat, lon);
                 }
             })
         }
@@ -48,7 +48,6 @@ var getWeather = function(lat, lon) {
     })
 }
 
-//get 
 
 var displayWeather = (data) => {
     var city = data.city.name
@@ -57,7 +56,6 @@ var displayWeather = (data) => {
     var temperature = data.list[0].main.temp;
     var humidity = data.list[0].main.humidity;
     var windSpeed = data.list[0].wind.speed;
-    //var UVIndex = 
 
     var currentWeather = $(`
     <h2>${city}</h2>
@@ -65,10 +63,35 @@ var displayWeather = (data) => {
     <p>Temperature: ${temperature}°F</p>
     <p>Humidity: ${humidity}%</p>
     <p>Wind Speed: ${windSpeed} MPH</p>
-    <p>UV Index: </p>
     `);
 
     $('#current-weather').append(currentWeather);
+
+    //get current UVI 
+    var lat = data.city.coord.lat;
+    var lon = data.city.coord.lon;
+    var uviURL = `https://api.openweathermap.org/data/2.5/uvi?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+    
+    fetch(uviURL).then(function(response) {
+        if (response.ok) {
+            console.log(response) 
+            response.json().then(function(uvi){
+                console.log(uvi);
+                var uvIndex = uvi.value;
+                var currentUvi = $(`
+                <p>UV Index: ${uvIndex}</p>
+                `);
+
+                //Append UVI
+                $('#current-weather').append(currentUvi);
+            })
+        } else {
+            alert('Error in UVI function');
+        }
+    })
+    
+
+
 
     console.log(city);
     console.log(date);
