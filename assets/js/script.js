@@ -11,20 +11,15 @@ var getLocation = function(city) {
 
     fetch(apiUrL).then(function(response) {
         if (response.ok) {
-            console.log(response) 
             response.json().then(function(data){
-                console.log(data);
                 // If no data comes back because the city does not exist
                 if (data.length === 0) {
                     alert('Enter a valid city');
                 }
                 else {
-                console.log(data[0].lon);
-                console.log(data[0].lat);
 
                 var lat = data[0].lat;
                 var lon = data[0].lon;
-                var city = data[0].name;
                 
                 getWeather(lat, lon)
                 }
@@ -34,21 +29,52 @@ var getLocation = function(city) {
 }
 
 
-//passes latitude, longitude, and city name
+//passes latitude, longitude and gets the weather forecast
 var getWeather = function(lat, lon) {
     
-    var apiUrL = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+    var apiUrL = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&exclude=minutely,hourly&contd=&appid=${apiKey}`;
 
     fetch(apiUrL).then(function(response) {
         if (response.ok) {
             console.log(response) 
             response.json().then(function(data){
                 console.log(data);
+             displayWeather(data);
+
             })
         } else {
             alert('Error in getWeather function');
         }
     })
+}
+
+//get 
+
+var displayWeather = (data) => {
+    var city = data.city.name
+    var date = moment().format('MMMM DD, YYYY')
+    //icon representing weather conditions
+    var temperature = data.list[0].main.temp;
+    var humidity = data.list[0].main.humidity;
+    var windSpeed = data.list[0].wind.speed;
+    //var UVIndex = 
+
+    var currentWeather = $(`
+    <h2>${city}</h2>
+    <h3>${date}</h3>
+    <p>Temperature: ${temperature}°F</p>
+    <p>Humidity: ${humidity}%</p>
+    <p>Wind Speed: ${windSpeed} MPH</p>
+    <p>UV Index: </p>
+    `);
+
+    $('#current-weather').append(currentWeather);
+
+    console.log(city);
+    console.log(date);
+    console.log(temperature);
+    console.log(humidity);
+    console.log(windSpeed);
 }
 
 var storeData = (city) => {
@@ -87,5 +113,4 @@ searchBtn.addEventListener("click", function () {
     console.log(city);
     getLocation(city);
     storeData(city);
-
 })
