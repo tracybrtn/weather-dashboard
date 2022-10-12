@@ -32,15 +32,15 @@ var getLocation = function(city) {
 //passes latitude, longitude and gets the weather forecast
 var getWeather = function(lat, lon) {
     
-    var apiUrL = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&exclude=minutely,hourly&contd=&appid=${apiKey}`;
+    var apiUrL = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&units=imperial&contd=&appid=${apiKey}`;
 
     fetch(apiUrL).then(function(response) {
         if (response.ok) {
             console.log(response) 
             response.json().then(function(data){
                 console.log(data);
-             displayWeather(data);
-
+                displayCurrentWeather(data);
+                displayFutureWeather(data);
             })
         } else {
             alert('Error in getWeather function');
@@ -49,7 +49,12 @@ var getWeather = function(lat, lon) {
 }
 
 
-var displayWeather = (data) => {
+var displayCurrentWeather = (data) => {
+    // Clear old content
+    $('#current-weather').empty();
+    $('#current-weather').removeClass('display-forecast');
+
+    // City info
     var city = data.city.name
     var date = moment().format('MMMM DD, YYYY')
     var temperature = data.list[0].main.temp;
@@ -64,9 +69,9 @@ var displayWeather = (data) => {
     var currentWeather = $(`
     <h2>${city} <img src="${iconURL}" alt="${iconDes}" /></h2>
     <h3>${date}</h3>
-    <p>Temperature: ${temperature}°F</p>
-    <p>Humidity: ${humidity}%</p>
-    <p>Wind Speed: ${windSpeed} MPH</p>
+    <p><b>Temperature:</b> ${temperature}°F</p>
+    <p><b>Humidity:</b> ${humidity}%</p>
+    <p><b>Wind Speed:</b> ${windSpeed} MPH</p>
     `);
 
     $('#current-weather').append(currentWeather);
@@ -83,26 +88,55 @@ var displayWeather = (data) => {
                 console.log(uvi);
                 var uvIndex = uvi.value;
                 var currentUvi = $(`
-                <p>UV Index: ${uvIndex}</p>
+                <p><b>UV Index:</b> ${uvIndex}</p>
                 `);
 
                 //Append UVI
                 $('#current-weather').append(currentUvi);
+                $('#current-weather').addClass('display-forecast');
             })
         } else {
             alert('Error in UVI function');
         }
     })
     
+    // TODO: Add color to UVI function
 
-
-
-    console.log(city);
-    console.log(date);
-    console.log(temperature);
-    console.log(humidity);
-    console.log(windSpeed);
 }
+
+var displayFutureWeather = (data) => {
+    // Clear old content
+    $('#future-weather').empty();
+
+    //loop through data to get 5-day information
+    for (let i = 1; i < 46; i = i + 8) {
+        //i=1 because i=0 is today's weather and not future weather. 
+        //i = i+8 because each day includes 8 3 hour forecasts
+        //i<46 because I want to display 5 days. 5*9 = 45. 45+1 = 46
+        var futureWeather = {
+            date: data.list[i].dt_txt,
+            icon: data.list[i].weather[0].icon,
+            temp: data.list[i].main.temp,
+            wind: data.list[i].wind.speed,
+            humidity: data.list[i].main.humidity
+        }
+        console.table(futureWeather);
+        //display content
+        console.log(futureWeather.date);
+        console.log(futureWeather.temp);
+
+        var futureWeatherHTML = $(`
+        <div class="card">
+            <h5 class="card-title">${futureWeather.date} <img src="${iconURL}" alt="${iconDes}"</h5>
+            <p>Temperature: ${futureWeather.temp}</p>
+            <p>Wind Speed: ${futureWeather.speed}</p>
+            <p>Humidity: ${futureWeather.humidity}</p>
+        </div>
+    `);
+
+        }
+        $('#future-weather').append(futureWeatherHTML);
+    }
 
 var storeData = (city) => {
     //get previous searches

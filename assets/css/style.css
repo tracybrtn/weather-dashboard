@@ -17,18 +17,33 @@ header {
     border-radius: 0px;
 }
 
+h2 {
+    font-size: 3.8vh;
+    font-weight: 800;
+}
+
+h3 {
+    font-size: 3vh;
+}
+
+main {
+    padding: 20px;
+}
+
 /*SEARCH FUNCTION START*/
 #search-function {
     display: flex;
     flex-direction: column;
     row-gap: 10px;
+    padding-top: 10px;
 }
 
 #search-form {
     display: flex;
     flex-direction: column;
     row-gap: 10px;
-    border-bottom: black solid 1px;
+    border-bottom: black solid 1px ;
+    border-radius: 0px;
 }
 
 form input {
@@ -61,6 +76,43 @@ form button {
 }
 /* SEARCH FUNCTION END*/
 
+/* DISPLAY STYLES*/
+#search-results {
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+}
+
+.display-forecast {
+    background-color: #d0deed;
+    padding: 10px 20px;
+}
+
+#future-weather {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    row-gap: 5px;
+    column-gap: 5px;
+}
+
+.card {
+    padding: 10px;
+    background-color: #d0deed3e;
+}
+
 footer {
     text-align: center;
+}
+
+@media screen and (min-width: 720px) {
+    #future-weather {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .card {
+        flex-shrink: 0;
+        flex-wrap: wrap;
+    }
 }
