@@ -52,13 +52,17 @@ var getWeather = function(lat, lon) {
 var displayWeather = (data) => {
     var city = data.city.name
     var date = moment().format('MMMM DD, YYYY')
-    //icon representing weather conditions
     var temperature = data.list[0].main.temp;
     var humidity = data.list[0].main.humidity;
     var windSpeed = data.list[0].wind.speed;
 
+    //Icon representing weather conditions
+    var icon = data.list[0].weather[0].icon;
+    var iconURL = `https://openweathermap.org/img/w/${icon}.png`;
+    var iconDes = data.list[0].weather[0].description;
+
     var currentWeather = $(`
-    <h2>${city}</h2>
+    <h2>${city} <img src="${iconURL}" alt="${iconDes}" /></h2>
     <h3>${date}</h3>
     <p>Temperature: ${temperature}°F</p>
     <p>Humidity: ${humidity}%</p>
@@ -114,6 +118,7 @@ var storeData = (city) => {
         citiesArr = JSON.parse(getStoredData)
     }
 
+    //Add city to previous searches if it is not there
     citiesArr.push(city);
     console.log(city);
 
