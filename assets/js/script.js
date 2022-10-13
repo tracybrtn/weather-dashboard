@@ -131,22 +131,25 @@ var displayFutureWeather = (data) => {
             humidity: data.list[i].main.humidity
         }
         console.table(futureWeather);
+        
         //display content
         console.log(futureWeather.date);
+      // var currentDate = moment.unix(futureWeather.date).format("MM/DD/YYYY");
+       // console.log(currentDate);
         console.log(futureWeather.temp);
-
+        //add icon
         var futureWeatherHTML = $(`
         <div class="card">
-            <h5 class="card-title">${futureWeather.date} <img src="${iconURL}" alt="${iconDes}"</h5>
+            <h5 class="card-title">${futureWeather.date} </h5>
             <p>Temperature: ${futureWeather.temp}</p>
             <p>Wind Speed: ${futureWeather.speed}</p>
             <p>Humidity: ${futureWeather.humidity}</p>
         </div>
     `);
 
-        }
         $('#future-weather').append(futureWeatherHTML);
     }
+}
 
 var storeData = (city) => {
     //get previous searches
