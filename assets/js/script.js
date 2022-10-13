@@ -88,20 +88,30 @@ var displayCurrentWeather = (data) => {
                 console.log(uvi);
                 var uvIndex = uvi.value;
                 var currentUvi = $(`
-                <p><b>UV Index:</b> ${uvIndex}</p>
+                <p id="uv-index"><span><b>UV Index:</b> ${uvIndex}</span></p>
                 `);
 
                 //Append UVI
                 $('#current-weather').append(currentUvi);
                 $('#current-weather').addClass('display-forecast');
+                    if (uvIndex < 3) {
+                        console.log("favorable");
+                        $('#uv-index').addClass('uvi-low');
+                    } else if (uvIndex >= 3 && uvIndex < 6) {
+                        console.log("moderate");
+                        $('#uv-index').addClass('uvi-mod');
+                    } else if (uvIndex >= 6 && uvIndex <= 12) {
+                        console.log("severe");
+                        $('#uv-index').addClass('uvi-sev');
+                    } else {
+                        console.log('error in UV Index function');
+                    }
             })
         } else {
             alert('Error in UVI function');
         }
     })
     
-    // TODO: Add color to UVI function
-
 }
 
 var displayFutureWeather = (data) => {
@@ -176,3 +186,4 @@ searchBtn.addEventListener("click", function () {
     getLocation(city);
     storeData(city);
 })
+  
