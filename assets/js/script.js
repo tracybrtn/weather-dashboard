@@ -126,24 +126,24 @@ var displayFutureWeather = (data) => {
         var futureWeather = {
             date: data.list[i].dt_txt,
             icon: data.list[i].weather[0].icon,
+            iconDes: data.list[i].weather[0].description,
             temp: data.list[i].main.temp,
             wind: data.list[i].wind.speed,
             humidity: data.list[i].main.humidity
         }
-        console.table(futureWeather);
-        
-        //display content
-        console.log(futureWeather.date);
-      // var currentDate = moment.unix(futureWeather.date).format("MM/DD/YYYY");
-       // console.log(currentDate);
-        console.log(futureWeather.temp);
+
+        // Give right formatting to current date
+        var currentDate = moment(futureWeather.date).format('L');
         //add icon
+        var iconURL = `https://openweathermap.org/img/w/${futureWeather.icon}.png`;
+
+        //Generate cards
         var futureWeatherHTML = $(`
         <div class="card">
-            <h5 class="card-title">${futureWeather.date} </h5>
-            <p>Temperature: ${futureWeather.temp}</p>
-            <p>Wind Speed: ${futureWeather.speed}</p>
-            <p>Humidity: ${futureWeather.humidity}</p>
+            <h5 class="card-title">${currentDate} <img src="${iconURL}" alt="${futureWeather.iconDes}" /></h5>
+            <p>Temperature: ${futureWeather.temp}°F</p>
+            <p>Wind Speed: ${futureWeather.wind} MPH</p>
+            <p>Humidity: ${futureWeather.humidity}%</p>
         </div>
     `);
 
