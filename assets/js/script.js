@@ -17,11 +17,11 @@ var getLocation = function(city) {
                     alert('Enter a valid city');
                 }
                 else {
-
-                var lat = data[0].lat;
-                var lon = data[0].lon;
-                
-                getWeather(lat, lon);
+                // Create variables of latitude and longitude and calls the getWeather function
+                    var lat = data[0].lat;
+                    var lon = data[0].lon;
+                    
+                    getWeather(lat, lon);
                 }
             })
         }
@@ -29,7 +29,7 @@ var getLocation = function(city) {
 }
 
 
-//passes latitude, longitude and gets the weather forecast
+//passes latitude, longitude, and gets the weather forecast
 var getWeather = function(lat, lon) {
     
     var apiUrL = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&units=imperial&contd=&appid=${apiKey}`;
@@ -39,6 +39,7 @@ var getWeather = function(lat, lon) {
             console.log(response) 
             response.json().then(function(data){
                 console.log(data);
+                //Calls functions to display current and future forecasts
                 displayCurrentWeather(data);
                 displayFutureWeather(data);
             })
@@ -48,7 +49,7 @@ var getWeather = function(lat, lon) {
     })
 }
 
-
+//Displays Current weather
 var displayCurrentWeather = (data) => {
     // Clear old content
     $('#current-weather').empty();
@@ -66,6 +67,7 @@ var displayCurrentWeather = (data) => {
     var iconURL = `https://openweathermap.org/img/w/${icon}.png`;
     var iconDes = data.list[0].weather[0].description;
 
+    //Creates HTML element that is later appended
     var currentWeather = $(`
     <h2>${city} <img src="${iconURL}" alt="${iconDes}" /></h2>
     <h3>${date}</h3>
@@ -76,7 +78,7 @@ var displayCurrentWeather = (data) => {
 
     $('#current-weather').append(currentWeather);
 
-    //get current UVI 
+    //gets current UVI 
     var lat = data.city.coord.lat;
     var lon = data.city.coord.lon;
     var uviURL = `https://api.openweathermap.org/data/2.5/uvi?lat=${lat}&lon=${lon}&appid=${apiKey}`;
@@ -91,7 +93,7 @@ var displayCurrentWeather = (data) => {
                 <p id="uv-index"><span><b>UV Index:</b> ${uvIndex}</span></p>
                 `);
 
-                //Append UVI
+                //Appends UVI to rest of weather forecast
                 $('#current-weather').append(currentUvi);
                 $('#current-weather').addClass('display-forecast');
                     if (uvIndex < 3) {
@@ -115,7 +117,7 @@ var displayCurrentWeather = (data) => {
 }
 
 var displayFutureWeather = (data) => {
-    // Clear old content
+    // Clears old content
     $('#future-weather').empty();
 
     //loop through data to get 5-day information
@@ -137,7 +139,7 @@ var displayFutureWeather = (data) => {
         //add icon
         var iconURL = `https://openweathermap.org/img/w/${futureWeather.icon}.png`;
 
-        //Generate cards
+        //Generates cards
         var futureWeatherHTML = $(`
         <div class="card">
             <h5 class="card-title">${currentDate} <img src="${iconURL}" alt="${futureWeather.iconDes}" /></h5>
@@ -148,6 +150,18 @@ var displayFutureWeather = (data) => {
     `);
 
         $('#future-weather').append(futureWeatherHTML);
+    }
+}
+
+var displayCity = () => {
+    var storage = JSON.parse(localStorage.getItem('Searched Cities'));
+    console.log(storage);
+    
+    for (var i = 0; i < storage.length; i++) {
+        var searchedCity = $(`
+        <p class="searched-city">${storage[i]}</p>
+        `)
+        $('#search-history').append(searchedCity);
     }
 }
 
@@ -166,14 +180,22 @@ var storeData = (city) => {
     }
 
     //Add city to previous searches if it is not there
-    citiesArr.push(city);
-    console.log(city);
-
+    if (!citiesArr.includes(city)){
+        citiesArr.push(city);
+        // add city to array of searched cities
+        var searchedCity = $(`
+        <p class="searched-city">${city}</p>
+        `)
+        $('#search-history').append(searchedCity);
+    }
+    
+   
     //stringify array to store in local storage
     var citiesArrString = JSON.stringify(citiesArr);
     //store array into storage
     window.localStorage.setItem('Searched Cities', citiesArrString);
 }
+
 
 //Capture user input
 searchBtn.addEventListener("click", function () {
@@ -189,4 +211,11 @@ searchBtn.addEventListener("click", function () {
     getLocation(city);
     storeData(city);
 })
-  
+
+//display city information if city from searched cities is clicked
+$(document).on("click", ".searched-city", function() {
+    var aCity = $(this).text();
+    getLocation(aCity);
+})
+
+displayCity();
