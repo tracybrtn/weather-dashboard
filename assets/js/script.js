@@ -7,7 +7,7 @@ var apiKey = 'e64b6c495acf85923e229f6fbed4cebb'
 
 //Converts city into latitude and longitude
 var getLocation = function(city) {
-    var apiUrL = `http://api.openweathermap.org/geo/1.0/direct?q=${city}&appid=${apiKey}`;
+    var apiUrL = `https://api.openweathermap.org/geo/1.0/direct?q=${city}&appid=${apiKey}`;
 
     fetch(apiUrL).then(function(response) {
         if (response.ok) {
@@ -32,7 +32,7 @@ var getLocation = function(city) {
 //passes latitude, longitude, and gets the weather forecast
 var getWeather = function(lat, lon) {
     
-    var apiUrL = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&units=imperial&contd=&appid=${apiKey}`;
+    var apiUrL = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&units=imperial&contd=&appid=${apiKey}`;
 
     fetch(apiUrL).then(function(response) {
         if (response.ok) {
